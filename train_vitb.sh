@@ -17,7 +17,7 @@ python main.py \
     --ra-sampler \
     --cutmix-alpha 1.0 \
     --model-ema \
-    --project Lightning-Vision \
+    --project lightning-vision \
     --name ${MODEL_NAME} \
     --offline \
     --trainer.accelerator npu \
