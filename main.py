@@ -25,11 +25,14 @@ def main(args):
         offline=args.offline,
         log_model=False
     )
+    # Remove logger and callbacks from args.trainer to avoid conflict
+    trainer_args = {key: value for key, value in args.trainer.items() if key not in ['logger', 'callbacks']}
+
+    # Instantiate the Trainer
     trainer = pl.Trainer(
-        **args.trainer,
+        **trainer_args,
         logger=wandb_logger,
         callbacks=[checkpoint_callback, lr_monitor],
-
     )
     model = VisionClassifier(args)
     trainer.fit(model, datamodule=dm)
