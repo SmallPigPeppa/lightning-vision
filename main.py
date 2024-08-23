@@ -29,6 +29,9 @@ def main(args):
     # Remove logger and callbacks from args.trainer to avoid conflict
     trainer_args = {key: value for key, value in args.trainer.items() if key not in ['logger', 'callbacks']}
 
+    # Add max_epochs from args.epochs
+    trainer_args['max_epochs'] = args.epochs
+
     # Instantiate the Trainer
     trainer = pl.Trainer(
         **trainer_args,
