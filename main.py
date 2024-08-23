@@ -1,25 +1,12 @@
-import time
-
-import torch.utils.data
-import torchvision
-import torchvision.transforms
-import presets
-import utils
-from sampler import RASampler
-from torch.utils.data.dataloader import default_collate
-from torchvision.transforms.functional import InterpolationMode
-from transforms import get_mixup_cutmix
-
-import torch
 import lightning as pl
 from lightning.pytorch import cli
 from lightning.pytorch.callbacks.model_checkpoint import ModelCheckpoint
 from lightning.pytorch.callbacks.lr_monitor import LearningRateMonitor
 from lightning.pytorch.loggers import WandbLogger
 from lightning_model.vision_classifier import VisionClassifier
-import os
 from lightning_dm.Imagenet_dmV2 import CustomDataModule
 
+import os
 os.environ['CURL_CA_BUNDLE'] = ''
 
 
