@@ -19,7 +19,6 @@ python main_timm.py \
     --model-ema \
     --project lightning-vision \
     --name ${MODEL_NAME} \
-    --offline \
     --trainer.accelerator npu \
     --trainer.num_nodes 1 \
     --trainer.precision 16 \
