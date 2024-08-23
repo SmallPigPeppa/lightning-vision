@@ -16,7 +16,7 @@ from lightning.pytorch import cli
 from lightning.pytorch.callbacks.model_checkpoint import ModelCheckpoint
 from lightning.pytorch.callbacks.lr_monitor import LearningRateMonitor
 from lightning.pytorch.loggers import WandbLogger
-from lightning_model.vision_classifier import VisionClassifier
+from lightning_model.vision_classifier_torch import VisionClassifier
 import os
 
 os.environ['CURL_CA_BUNDLE'] = ''
