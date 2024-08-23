@@ -147,7 +147,8 @@ class VisionClassifier(LightningModule):
         }
 
     def lr_scheduler_step(self, scheduler, metric):
-        scheduler.step(epoch=self.current_epoch)  # timm's scheduler need the epoch value
+        # scheduler.step(epoch=self.current_epoch)  # timm's scheduler need the epoch value
+        scheduler.step()  # timm's scheduler need the epoch value
 
     def on_before_backward(self, loss: torch.Tensor) -> None:
         if self.model_ema:
