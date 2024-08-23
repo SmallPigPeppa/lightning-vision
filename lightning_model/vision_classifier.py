@@ -1,5 +1,6 @@
 import torch
 from timm.utils import accuracy
+from timm import create_model
 from lightning import LightningModule
 import utils
 import torchvision
@@ -28,9 +29,15 @@ class VisionClassifier(LightningModule):
         # )
 
         print(f"Creating model: {config.model}")
-        self.model = torchvision.models.get_model(
-            name=config.model,
-            weights=config.weights,
+        # self.model = torchvision.models.get_model(
+        #     name=config.model,
+        #     weights=config.weights,
+        #     num_classes=config.num_classes
+        # )
+
+        self.model = create_model(
+            model_name=config.model,
+            pretrained=False,
             num_classes=config.num_classes
         )
 

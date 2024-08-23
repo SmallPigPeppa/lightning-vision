@@ -21,7 +21,6 @@ def _get_cache_path(filepath):
     return cache_path
 
 
-
 class CustomDataModule(LightningDataModule):
     def __init__(self, train_dir, val_dir, args):
         super().__init__()
@@ -107,10 +106,18 @@ class CustomDataModule(LightningDataModule):
 
     def train_dataloader(self):
         mixup_cutmix = get_mixup_cutmix(
-            mixup_alpha=self.args.mixup_alpha, cutmix_alpha=self.args.cutmix_alpha,
-            num_classes=len(self.train_dataset.classes), use_v2=self.args.use_v2
+            mixup_alpha=self.args.mixup_alpha,
+            cutmix_alpha=self.args.cutmix_alpha,
+            num_classes=len(self.train_dataset.classes),
+            use_v2=self.args.use_v2
         )
-        collate_fn = mixup_cutmix(*default_collate) if mixup_cutmix is not None else default_collate
+
+        if mixup_cutmix is not None:
+            def collate_fn(batch):
+                return mixup_cutmix(*default_collate(batch))
+
+        else:
+            collate_fn = default_collate
 
         return DataLoader(
             self.train_dataset,
