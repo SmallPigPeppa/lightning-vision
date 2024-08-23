@@ -7,6 +7,7 @@ from lightning_model.vision_classifier import VisionClassifier
 from lightning_dm.Imagenet_dmV2 import CustomDataModule
 
 import os
+
 os.environ['CURL_CA_BUNDLE'] = ''
 
 
@@ -177,6 +178,7 @@ def get_args_parser(add_help=True):
     parser.add_argument('--name', default='debug')
     parser.add_argument('--project', default='debug')
     parser.add_argument('--offline', action='store_true', default=False)
+    parser.add_argument('--num-classes', default=1000, type=int)
 
     return parser
 
