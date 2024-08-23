@@ -244,7 +244,7 @@ def main(args):
         dataset_test, batch_size=args.batch_size, sampler=test_sampler, num_workers=args.workers, pin_memory=True
     )
 
-    print("Creating model")
+    print("Creating lightning_model")
     model = torchvision.models.get_model(args.model, weights=args.weights, num_classes=num_classes)
     model.to(device)
 
@@ -340,7 +340,7 @@ def main(args):
 
     if args.resume:
         checkpoint = torch.load(args.resume, map_location="cpu", weights_only=True)
-        model_without_ddp.load_state_dict(checkpoint["model"])
+        model_without_ddp.load_state_dict(checkpoint["lightning_model"])
         if not args.test_only:
             optimizer.load_state_dict(checkpoint["optimizer"])
             lr_scheduler.load_state_dict(checkpoint["lr_scheduler"])
@@ -372,7 +372,7 @@ def main(args):
             evaluate(model_ema, criterion, data_loader_test, device=device, log_suffix="EMA")
         if args.output_dir:
             checkpoint = {
-                "model": model_without_ddp.state_dict(),
+                "lightning_model": model_without_ddp.state_dict(),
                 "optimizer": optimizer.state_dict(),
                 "lr_scheduler": lr_scheduler.state_dict(),
                 "epoch": epoch,
@@ -396,7 +396,7 @@ def get_args_parser(add_help=True):
     parser = argparse.ArgumentParser(description="PyTorch Classification Training", add_help=add_help)
 
     parser.add_argument("--data-path", default="/datasets01/imagenet_full_size/061417/", type=str, help="dataset path")
-    parser.add_argument("--model", default="resnet18", type=str, help="model name")
+    parser.add_argument("--lightning_model", default="resnet18", type=str, help="lightning_model name")
     parser.add_argument("--device", default="cuda", type=str, help="device (Use cuda or cpu Default: cuda)")
     parser.add_argument(
         "-b", "--batch-size", default=32, type=int, help="images per gpu, the total batch size is $NGPU x batch_size"
@@ -468,7 +468,7 @@ def get_args_parser(add_help=True):
     parser.add_argument(
         "--test-only",
         dest="test_only",
-        help="Only test the model",
+        help="Only test the lightning_model",
         action="store_true",
     )
     parser.add_argument("--auto-augment", default=None, type=str, help="auto augment policy (default: None)")
@@ -483,19 +483,19 @@ def get_args_parser(add_help=True):
     parser.add_argument("--world-size", default=1, type=int, help="number of distributed processes")
     parser.add_argument("--dist-url", default="env://", type=str, help="url used to set up distributed training")
     parser.add_argument(
-        "--model-ema", action="store_true", help="enable tracking Exponential Moving Average of model parameters"
+        "--lightning_model-ema", action="store_true", help="enable tracking Exponential Moving Average of lightning_model parameters"
     )
     parser.add_argument(
-        "--model-ema-steps",
+        "--lightning_model-ema-steps",
         type=int,
         default=32,
-        help="the number of iterations that controls how often to update the EMA model (default: 32)",
+        help="the number of iterations that controls how often to update the EMA lightning_model (default: 32)",
     )
     parser.add_argument(
-        "--model-ema-decay",
+        "--lightning_model-ema-decay",
         type=float,
         default=0.99998,
-        help="decay factor for Exponential Moving Average of model parameters (default: 0.99998)",
+        help="decay factor for Exponential Moving Average of lightning_model parameters (default: 0.99998)",
     )
     parser.add_argument(
         "--use-deterministic-algorithms", action="store_true", help="Forces the use of deterministic algorithms only."
