@@ -1,7 +1,7 @@
 import torch
 from timm.utils import accuracy
 from lightning import LightningModule
-from torch_official_code import utils
+import utils
 import torchvision
 
 

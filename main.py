@@ -3,11 +3,12 @@ import time
 import torch.utils.data
 import torchvision
 import torchvision.transforms
-from torch_official_code import utils, presets
-from torch_official_code.sampler import RASampler
+import presets
+import utils
+from sampler import RASampler
 from torch.utils.data.dataloader import default_collate
 from torchvision.transforms.functional import InterpolationMode
-from torch_official_code.transforms import get_mixup_cutmix
+from transforms import get_mixup_cutmix
 
 import torch
 import lightning as pl
