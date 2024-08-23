@@ -17,7 +17,6 @@ class VisionClassifier(LightningModule):
         self.config = config
         self.save_hyperparameters()
 
-        # print(f"Creating model: {config.model}")
         # self.model = create_model(
         #     model_name=config.model,
         #     pretrained=False,
@@ -29,16 +28,11 @@ class VisionClassifier(LightningModule):
         # )
 
         print(f"Creating model: {config.model}")
-        # self.model = torchvision.models.get_model(
-        #     name=config.model,
-        #     weights=config.weights,
-        #     num_classes=config.num_classes
-        # )
-
         self.model = create_model(
             model_name=config.model,
             pretrained=False,
-            num_classes=config.num_classes
+            num_classes=config.num_classes,
+            img_size=config.train_crop_size
         )
 
         self.criterion = torch.nn.CrossEntropyLoss(label_smoothing=config.label_smoothing)

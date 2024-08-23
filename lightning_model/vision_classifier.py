@@ -17,27 +17,11 @@ class VisionClassifier(LightningModule):
         self.config = config
         self.save_hyperparameters()
 
-        # print(f"Creating model: {config.model}")
-        # self.model = create_model(
-        #     model_name=config.model,
-        #     pretrained=False,
-        #     num_classes=config.nb_classes,
-        #     drop_rate=config.drop,
-        #     drop_path_rate=config.drop_path,
-        #     drop_block_rate=None,
-        #     img_size=config.input_size
-        # )
 
         print(f"Creating model: {config.model}")
-        # self.model = torchvision.models.get_model(
-        #     name=config.model,
-        #     weights=config.weights,
-        #     num_classes=config.num_classes
-        # )
-
-        self.model = create_model(
-            model_name=config.model,
-            pretrained=False,
+        self.model = torchvision.models.get_model(
+            name=config.model,
+            weights=config.weights,
             num_classes=config.num_classes
         )
 

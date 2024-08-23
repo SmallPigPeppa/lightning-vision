@@ -1,6 +1,6 @@
 MODEL_NAME=deit_base_patch16_224
 
-python main.py \
+python main_timm.py \
     --model ${MODEL_NAME} \
     --epochs 300 \
     --batch-size 512 \
