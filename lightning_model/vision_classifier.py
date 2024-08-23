@@ -16,9 +16,9 @@ class VisionClassifier(LightningModule):
         self.config = config
         self.save_hyperparameters()
 
-        # print(f"Creating lightning_model: {config.lightning_model}")
-        # self.lightning_model = create_model(
-        #     model_name=config.lightning_model,
+        # print(f"Creating model: {config.model}")
+        # self.model = create_model(
+        #     model_name=config.model,
         #     pretrained=False,
         #     num_classes=config.nb_classes,
         #     drop_rate=config.drop,
@@ -34,7 +34,7 @@ class VisionClassifier(LightningModule):
             num_classes=config.num_classes
         )
 
-        # lightning_model EMA
+        # model EMA
         model_ema = None
         if config.model_ema:
             # Decay adjustment that aims to keep the decay independent of other hyper-parameters originally proposed at:

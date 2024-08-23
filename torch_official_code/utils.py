@@ -157,7 +157,7 @@ class MetricLogger:
 
 
 class ExponentialMovingAverage(torch.optim.swa_utils.AveragedModel):
-    """Maintains moving averages of lightning_model parameters using an exponential decay.
+    """Maintains moving averages of model parameters using an exponential decay.
     ``ema_avg = decay * avg_model_param + (1 - decay) * model_param``
     `torch.optim.swa_utils.AveragedModel <https://pytorch.org/docs/stable/optim.html#custom-averaging-strategies>`_
     is used to compute the EMA.
@@ -270,13 +270,13 @@ def init_distributed_mode(args):
 
 
 def average_checkpoints(inputs):
-    """Loads checkpoints from inputs and returns a lightning_model with averaged weights. Original implementation taken from:
+    """Loads checkpoints from inputs and returns a model with averaged weights. Original implementation taken from:
     https://github.com/pytorch/fairseq/blob/a48f235636557b8d3bc4922a6fa90f3a0fa57955/scripts/average_checkpoints.py#L16
 
     Args:
       inputs (List[str]): An iterable of string paths of checkpoints to load from.
     Returns:
-      A dict of string keys mapping to various values. The 'lightning_model' key
+      A dict of string keys mapping to various values. The 'model' key
       from the returned dict should correspond to an OrderedDict mapping
       string parameter names to torch Tensors.
     """
@@ -292,7 +292,7 @@ def average_checkpoints(inputs):
         # Copies over the settings from the first checkpoint
         if new_state is None:
             new_state = state
-        model_params = state["lightning_model"]
+        model_params = state["model"]
         model_params_keys = list(model_params.keys())
         if params_keys is None:
             params_keys = model_params_keys
@@ -316,43 +316,43 @@ def average_checkpoints(inputs):
             averaged_params[k].div_(num_models)
         else:
             averaged_params[k] //= num_models
-    new_state["lightning_model"] = averaged_params
+    new_state["model"] = averaged_params
     return new_state
 
 
-def store_model_weights(model, checkpoint_path, checkpoint_key="lightning_model", strict=True):
+def store_model_weights(model, checkpoint_path, checkpoint_key="model", strict=True):
     """
     This method can be used to prepare weights files for new models. It receives as
-    input a lightning_model architecture and a checkpoint from the training script and produces
+    input a model architecture and a checkpoint from the training script and produces
     a file with the weights ready for release.
 
     Examples:
         from torchvision import models as M
 
         # Classification
-        lightning_model = M.mobilenet_v3_large(weights=None)
-        print(store_model_weights(lightning_model, './class.pth'))
+        model = M.mobilenet_v3_large(weights=None)
+        print(store_model_weights(model, './class.pth'))
 
         # Quantized Classification
-        lightning_model = M.quantization.mobilenet_v3_large(weights=None, quantize=False)
-        lightning_model.fuse_model(is_qat=True)
-        lightning_model.qconfig = torch.ao.quantization.get_default_qat_qconfig('qnnpack')
-        _ = torch.ao.quantization.prepare_qat(lightning_model, inplace=True)
-        print(store_model_weights(lightning_model, './qat.pth'))
+        model = M.quantization.mobilenet_v3_large(weights=None, quantize=False)
+        model.fuse_model(is_qat=True)
+        model.qconfig = torch.ao.quantization.get_default_qat_qconfig('qnnpack')
+        _ = torch.ao.quantization.prepare_qat(model, inplace=True)
+        print(store_model_weights(model, './qat.pth'))
 
         # Object Detection
-        lightning_model = M.detection.fasterrcnn_mobilenet_v3_large_fpn(weights=None, weights_backbone=None)
-        print(store_model_weights(lightning_model, './obj.pth'))
+        model = M.detection.fasterrcnn_mobilenet_v3_large_fpn(weights=None, weights_backbone=None)
+        print(store_model_weights(model, './obj.pth'))
 
         # Segmentation
-        lightning_model = M.segmentation.deeplabv3_mobilenet_v3_large(weights=None, weights_backbone=None, aux_loss=True)
-        print(store_model_weights(lightning_model, './segm.pth', strict=False))
+        model = M.segmentation.deeplabv3_mobilenet_v3_large(weights=None, weights_backbone=None, aux_loss=True)
+        print(store_model_weights(model, './segm.pth', strict=False))
 
     Args:
-        model (pytorch.nn.Module): The lightning_model on which the weights will be loaded for validation purposes.
+        model (pytorch.nn.Module): The model on which the weights will be loaded for validation purposes.
         checkpoint_path (str): The path of the checkpoint we will load.
-        checkpoint_key (str, optional): The key of the checkpoint where the lightning_model weights are stored.
-            Default: "lightning_model".
+        checkpoint_key (str, optional): The key of the checkpoint where the model weights are stored.
+            Default: "model".
         strict (bool): whether to strictly enforce that the keys
             in :attr:`state_dict` match the keys returned by this module's
             :meth:`~torch.nn.Module.state_dict` function. Default: ``True``
@@ -360,15 +360,15 @@ def store_model_weights(model, checkpoint_path, checkpoint_key="lightning_model"
     Returns:
         output_path (str): The location where the weights are saved.
     """
-    # Store the new lightning_model next to the checkpoint_path
+    # Store the new model next to the checkpoint_path
     checkpoint_path = os.path.abspath(checkpoint_path)
     output_dir = os.path.dirname(checkpoint_path)
 
-    # Deep copy to avoid side effects on the lightning_model object.
+    # Deep copy to avoid side effects on the model object.
     model = copy.deepcopy(model)
     checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
 
-    # Load the weights to the lightning_model to validate that everything works
+    # Load the weights to the model to validate that everything works
     # and remove unnecessary weights (such as auxiliaries, etc.)
     if checkpoint_key == "model_ema":
         del checkpoint[checkpoint_key]["n_averaged"]

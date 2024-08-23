@@ -22,7 +22,7 @@ def main(args):
     if args.post_training_quantize and args.distributed:
         raise RuntimeError("Post training quantization example should not be performed on distributed mode")
 
-    # Set backend engine to ensure that quantized lightning_model runs on the correct kernels
+    # Set backend engine to ensure that quantized model runs on the correct kernels
     if args.qbackend not in torch.backends.quantized.supported_engines:
         raise RuntimeError("Quantized backend not supported: " + str(args.qbackend))
     torch.backends.quantized.engine = args.qbackend
@@ -44,8 +44,8 @@ def main(args):
         dataset_test, batch_size=args.eval_batch_size, sampler=test_sampler, num_workers=args.workers, pin_memory=True
     )
 
-    print("Creating lightning_model", args.model)
-    # when training quantized models, we always start from a pre-trained fp32 reference lightning_model
+    print("Creating model", args.model)
+    # when training quantized models, we always start from a pre-trained fp32 reference model
     prefix = "quantized_"
     model_name = args.model
     if not model_name.startswith(prefix):
@@ -75,7 +75,7 @@ def main(args):
 
     if args.resume:
         checkpoint = torch.load(args.resume, map_location="cpu", weights_only=True)
-        model_without_ddp.load_state_dict(checkpoint["lightning_model"])
+        model_without_ddp.load_state_dict(checkpoint["model"])
         optimizer.load_state_dict(checkpoint["optimizer"])
         lr_scheduler.load_state_dict(checkpoint["lr_scheduler"])
         args.start_epoch = checkpoint["epoch"] + 1
@@ -96,10 +96,10 @@ def main(args):
         evaluate(model, criterion, data_loader_calibration, device=device, print_freq=1)
         torch.ao.quantization.convert(model, inplace=True)
         if args.output_dir:
-            print("Saving quantized lightning_model")
+            print("Saving quantized model")
             if utils.is_main_process():
                 torch.save(model.state_dict(), os.path.join(args.output_dir, "quantized_post_train_model.pth"))
-        print("Evaluating post-training quantized lightning_model")
+        print("Evaluating post-training quantized model")
         evaluate(model, criterion, data_loader_test, device=device)
         return
 
@@ -123,7 +123,7 @@ def main(args):
             if epoch >= args.num_batch_norm_update_epochs:
                 print("Freezing BN for subseq epochs, epoch = ", epoch)
                 model.apply(torch.nn.intrinsic.qat.freeze_bn_stats)
-            print("Evaluate QAT lightning_model")
+            print("Evaluate QAT model")
 
             evaluate(model, criterion, data_loader_test, device=device, log_suffix="QAT")
             quantized_eval_model = copy.deepcopy(model_without_ddp)
@@ -131,14 +131,14 @@ def main(args):
             quantized_eval_model.to(torch.device("cpu"))
             torch.ao.quantization.convert(quantized_eval_model, inplace=True)
 
-            print("Evaluate Quantized lightning_model")
+            print("Evaluate Quantized model")
             evaluate(quantized_eval_model, criterion, data_loader_test, device=torch.device("cpu"))
 
         model.train()
 
         if args.output_dir:
             checkpoint = {
-                "lightning_model": model_without_ddp.state_dict(),
+                "model": model_without_ddp.state_dict(),
                 "eval_model": quantized_eval_model.state_dict(),
                 "optimizer": optimizer.state_dict(),
                 "lr_scheduler": lr_scheduler.state_dict(),
@@ -160,7 +160,7 @@ def get_args_parser(add_help=True):
     parser = argparse.ArgumentParser(description="PyTorch Quantized Classification Training", add_help=add_help)
 
     parser.add_argument("--data-path", default="/datasets01/imagenet_full_size/061417/", type=str, help="dataset path")
-    parser.add_argument("--lightning_model", default="mobilenet_v2", type=str, help="lightning_model name")
+    parser.add_argument("--model", default="mobilenet_v2", type=str, help="model name")
     parser.add_argument("--qbackend", default="qnnpack", type=str, help="Quantized backend: fbgemm or qnnpack")
     parser.add_argument("--device", default="cuda", type=str, help="device (Use cuda or cpu Default: cuda)")
 
@@ -228,13 +228,13 @@ def get_args_parser(add_help=True):
     parser.add_argument(
         "--test-only",
         dest="test_only",
-        help="Only test the lightning_model",
+        help="Only test the model",
         action="store_true",
     )
     parser.add_argument(
         "--post-training-quantize",
         dest="post_training_quantize",
-        help="Post training quantize the lightning_model",
+        help="Post training quantize the model",
         action="store_true",
     )
 

@@ -177,7 +177,7 @@ def get_args_parser(add_help=True):
     parser.add_lightning_class_args(LearningRateMonitor, "lr_monitor")
 
     parser.add_argument("--data-path", default="/datasets01/imagenet_full_size/061417/", type=str, help="dataset path")
-    parser.add_argument("--lightning_model", default="resnet18", type=str, help="lightning_model name")
+    parser.add_argument("--model", default="resnet18", type=str, help="model name")
     parser.add_argument("--device", default="cuda", type=str, help="device (Use cuda or cpu Default: cuda)")
     parser.add_argument(
         "-b", "--batch-size", default=32, type=int, help="images per gpu, the total batch size is $NGPU x batch_size"
@@ -249,7 +249,7 @@ def get_args_parser(add_help=True):
     parser.add_argument(
         "--test-only",
         dest="test_only",
-        help="Only test the lightning_model",
+        help="Only test the model",
         action="store_true",
     )
     parser.add_argument("--auto-augment", default=None, type=str, help="auto augment policy (default: None)")
@@ -264,19 +264,19 @@ def get_args_parser(add_help=True):
     parser.add_argument("--world-size", default=1, type=int, help="number of distributed processes")
     parser.add_argument("--dist-url", default="env://", type=str, help="url used to set up distributed training")
     parser.add_argument(
-        "--lightning_model-ema", action="store_true", help="enable tracking Exponential Moving Average of lightning_model parameters"
+        "--model-ema", action="store_true", help="enable tracking Exponential Moving Average of model parameters"
     )
     parser.add_argument(
-        "--lightning_model-ema-steps",
+        "--model-ema-steps",
         type=int,
         default=32,
-        help="the number of iterations that controls how often to update the EMA lightning_model (default: 32)",
+        help="the number of iterations that controls how often to update the EMA model (default: 32)",
     )
     parser.add_argument(
-        "--lightning_model-ema-decay",
+        "--model-ema-decay",
         type=float,
         default=0.99998,
-        help="decay factor for Exponential Moving Average of lightning_model parameters (default: 0.99998)",
+        help="decay factor for Exponential Moving Average of model parameters (default: 0.99998)",
     )
     parser.add_argument(
         "--use-deterministic-algorithms", action="store_true", help="Forces the use of deterministic algorithms only."
