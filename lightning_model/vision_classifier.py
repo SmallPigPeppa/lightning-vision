@@ -41,6 +41,8 @@ class VisionClassifier(LightningModule):
             num_classes=config.num_classes
         )
 
+        self.criterion = torch.nn.CrossEntropyLoss(label_smoothing=config.label_smoothing)
+
         # model EMA
         model_ema = None
         if config.model_ema:
