@@ -25,6 +25,7 @@ python main.py \
     --trainer.precision 16 \
     --trainer.gradient_clip_val 1 \
     --trainer.log_every_n_steps 1 \
+    --trainer.use_distributed_sampler True \
     --lr_monitor.logging_interval epoch \
     --model_checkpoint.dirpath ckpt \
     --model_checkpoint.save_weights_only True \
