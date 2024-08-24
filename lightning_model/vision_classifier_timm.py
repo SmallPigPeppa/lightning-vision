@@ -156,6 +156,7 @@ class VisionClassifier(LightningModule):
             if self.current_epoch < self.config.lr_warmup_epochs:
                 # Reset ema buffer to keep copying weights during warmup period
                 self.model_ema.n_averaged.fill_(0)
+
     # def on_before_optimizer_step(self, optimizer) -> None:
     #     print("**************on_before_opt enter*********")
     #     for name, param in self.named_parameters():
