@@ -21,7 +21,7 @@ python main_timm.py \
     --name ${MODEL_NAME} \
     --offline \
     --trainer.accelerator npu \
-    --trainer.num_nodes ${NNODES} \
+    --trainer.num_nodes 1 \
     --trainer.precision 16 \
     --trainer.gradient_clip_val 1 \
     --trainer.log_every_n_steps 1 \
