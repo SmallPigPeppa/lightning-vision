@@ -1,7 +1,7 @@
 MODEL_NAME=deit_base_patch16_224
 
 python main_timm.py \
-    --model ${MODEL_NAME} \
+    --model ${MODEL_NAME}_wora \
     --epochs 300 \
     --batch-size 512 \
     --opt adamw \
