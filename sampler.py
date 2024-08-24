@@ -3,8 +3,8 @@ import math
 import torch
 import torch.distributed as dist
 
-# class RASampler(torch.utils.data.Sampler):
-class RASampler(torch.utils.data.distributed.DistributedSampler):
+class RASampler(torch.utils.data.Sampler):
+# class RASampler(torch.utils.data.distributed.DistributedSampler):
     """Sampler that restricts data loading to a subset of the dataset for distributed,
     with repeated augmentation.
     It ensures that different each augmented version of a sample will be visible to a
