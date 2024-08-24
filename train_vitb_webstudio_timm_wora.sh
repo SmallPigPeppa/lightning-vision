@@ -1,0 +1,32 @@
+MODEL_NAME=deit_base_patch16_224
+
+python main_timm.py \
+    --model ${MODEL_NAME} \
+    --epochs 300 \
+    --batch-size 512 \
+    --opt adamw \
+    --lr 0.003 \
+    --wd 0.3 \
+    --lr-scheduler cosineannealinglr \
+    --lr-warmup-method linear \
+    --lr-warmup-epochs 30 \
+    --lr-warmup-decay 0.033 \
+    --label-smoothing 0.11 \
+    --mixup-alpha 0.2 \
+    --auto-augment ra \
+    --cutmix-alpha 1.0 \
+    --model-ema \
+    --project lightning-vision \
+    --name ${MODEL_NAME} \
+    --trainer.accelerator npu \
+    --trainer.num_nodes 1 \
+    --trainer.precision 16 \
+    --trainer.gradient_clip_val 1 \
+    --trainer.log_every_n_steps 1 \
+    --trainer.use_distributed_sampler True \
+    --trainer.strategy ddp_find_unused_parameters_true \
+    --lr_monitor.logging_interval epoch \
+    --model_checkpoint.dirpath ckpt \
+    --model_checkpoint.save_weights_only True \
+    --model_checkpoint.filename ${MODEL_NAME}\
+    --data-path /home/ma-user/work/dataset/all/torch_ds/imagenet
