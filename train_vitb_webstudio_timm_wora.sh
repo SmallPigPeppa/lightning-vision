@@ -1,7 +1,7 @@
 MODEL_NAME=deit_base_patch16_224
 
 python main_timm.py \
-    --model ${MODEL_NAME}_wora \
+    --model ${MODEL_NAME} \
     --epochs 300 \
     --batch-size 512 \
     --opt adamw \
@@ -17,7 +17,7 @@ python main_timm.py \
     --cutmix-alpha 1.0 \
     --model-ema \
     --project lightning-vision \
-    --name ${MODEL_NAME} \
+    --name ${MODEL_NAME}_wora \
     --trainer.accelerator npu \
     --trainer.num_nodes 1 \
     --trainer.precision 16 \
